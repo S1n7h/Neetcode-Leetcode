@@ -1,0 +1,47 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int val=0, TreeNode left=null, TreeNode right=null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+public class Solution {
+    public List<List<int>> VerticalOrder(TreeNode root) {
+        if (root == null)   return List<List<int>>();
+        var ret = new List<List<int>>();
+        var dict = new SortedDictionary<int, List<int>>();
+
+        var q = new PriorityQueue<TreeNode, int>();
+        q.Enqueue(root, 0);
+
+        while(q.Count != 0){
+            int Size = q.Count;
+
+            for (int i = 0 ; i < Size ; i++){
+                q.TryDequeue(out TreeNode top, out int priority);
+
+                if (!dict.ContainsKey(priority)){
+                    dict[priority] = new List<int>();
+                }dict[priority].Add(top.val);
+
+                if (top.right != null)  q.Enqueue((top.right), priority + 1);
+                if (top.left != null)  q.Enqueue((top.left), priority - 1);
+            }
+        }
+
+        foreach(var item in dict.Values){
+            ret.Add(item);
+        }
+
+        return ret;
+    }
+
+    
+}

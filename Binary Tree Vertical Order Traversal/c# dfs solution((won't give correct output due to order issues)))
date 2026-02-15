@@ -1,0 +1,39 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int val=0, TreeNode left=null, TreeNode right=null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+public class Solution {
+    public List<List<int>> VerticalOrder(TreeNode root) {
+        var ret = new List<List<int>>();
+        var dict = new SortedDictionary<int, List<int>>();
+
+        Dfs(root, 0, ref dict);
+
+        foreach(var item in dict.Values){
+            ret.Add(item);
+        }
+
+        return ret;
+    }
+
+    void Dfs(TreeNode root, int value, ref SortedDictionary<int, List<int>> dict){
+        if (root == null)   return;
+
+        if (!dict.ContainsKey(value)){
+            dict[value] = new List<int>();
+        }dict[value].Add(root.val);
+
+        Dfs(root.left, value - 1, ref dict);
+        Dfs(root.right, value + 1, ref dict);
+    }
+}
