@@ -1,0 +1,52 @@
+public class Start
+{
+    public static void Main()
+    {
+        Solution f = new Solution();
+        var filled = f.ChampagneTower(1000000009, 33, 17);
+        Console.WriteLine($"{filled}");
+    }
+}
+
+public class Solution {
+    public double ChampagneTower(int poured, int query_row, int query_glass) {
+        //Make a dictionary storing coordinates (1, 1)
+        //When filling glass, if it reaches full cap ie dict[(x, y)] = 1, then if (x + 1, y) & (x + 1, y + 1) don't exist in the dictionary, add them, and fill
+        //both of them equally, both of their fill amount is going to be half of the remaining glasses.
+        //once all glasses are filled using this method
+        //to find query_glass, 
+            //you return value at dict(query_row, query_glass)
+
+        if (poured == 0) return 0.0f;
+
+        var dict = new Dictionary<(int, int) , float>();
+
+        dict[(0, 0)] = 0.0f;
+        FillGlasses((float) poured, 0, 0, ref dict, query_row);
+
+        if (dict.ContainsKey((query_row, query_glass)))   return dict[(query_row, query_glass)];
+        return 0.0f;
+    }
+
+    private void FillGlasses(float poured, int r, int c, ref Dictionary<(int, int), float> dict, int query_row){
+        if (r > query_row)  return;
+        if (poured <= 0.0f)    return;
+        
+
+        if (!dict.ContainsKey((r, c))) dict[(r, c)] = 0.0f;
+        float unfilledPortionOfGlass = 1.0f - dict[(r, c)];
+
+        //if you can fill the glass AND there is water remaining
+        if (poured - unfilledPortionOfGlass > 0.0f){
+            dict[(r, c)] = 1.0f;
+            FillGlasses((poured - unfilledPortionOfGlass)/2.0f, r + 1, c, ref dict, query_row);
+            FillGlasses((poured - unfilledPortionOfGlass)/2.0f, r + 1, c + 1, ref dict, query_row);
+        }//if you cannot fill the glass, you just add the water to the glass
+        else dict[(r, c)] += poured;
+    }
+}
+
+
+
+
+
