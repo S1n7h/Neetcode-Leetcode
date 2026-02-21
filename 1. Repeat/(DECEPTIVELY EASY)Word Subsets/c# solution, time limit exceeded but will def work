@@ -1,0 +1,41 @@
+public class Solution {
+    public IList<string> WordSubsets(string[] words1, string[] words2) {
+        IList<string> ret = new List<string>();
+
+        foreach(var word in words1){
+            //word = leetcode
+            var dict = new Dictionary<char, int>();
+
+            foreach(var letter in word){
+                if (!dict.ContainsKey(letter))  dict[letter] = 0;
+                dict[letter]++;
+            }
+
+            bool flag = true;
+            foreach(var stringb in words2){
+                // Console.WriteLine($"{stringb}");
+                //1st iteration: stringb = lo
+                //2nd iteration: stringb = eo
+                // Dictionary<char, int> tempdict = dict;
+                var tempdict = new Dictionary<char, int>();
+
+                foreach(var letter in word){
+                    if (!tempdict.ContainsKey(letter))  tempdict[letter] = 0;
+                    tempdict[letter]++;
+                }
+                
+                foreach(var letter in stringb){
+                    if (!tempdict.ContainsKey(letter)){
+                        // Console.WriteLine($"The string is:{stringb} and the letter is:{letter}");
+                        flag = false;
+                        break;
+                    }
+                    tempdict[letter]--;
+                        
+                    if (tempdict[letter] == 0)  tempdict.Remove(letter);
+                }
+                  
+            }if (flag) ret.Add(word);           
+        }return ret;  
+    }
+}

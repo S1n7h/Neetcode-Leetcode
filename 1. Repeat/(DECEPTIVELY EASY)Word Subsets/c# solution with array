@@ -1,0 +1,31 @@
+public class Solution {
+    public IList<string> WordSubsets(string[] words1, string[] words2) {
+        IList<string> ret = new List<string>();
+        int[] maxFreq = new int[26];
+
+        foreach(var word in words2){
+            int[] freq = new int[26];
+            
+            foreach(var letter in word){
+                freq[letter - 'a']++;
+            }
+
+            for (int i = 0 ; i < maxFreq.Length ; i++){
+                maxFreq[i] = Math.Max(maxFreq[i], freq[i]);
+            }
+        }
+
+        foreach(var word in words1){
+            int[] wordsCount = new int[26];
+            foreach(var letter in word){
+                wordsCount[letter - 'a']++;
+            }
+
+            var flag = true;
+            for (int i = 0 ; i < maxFreq.Length ; i++){
+                if (maxFreq[i] > wordsCount[i]) flag = false;
+            }
+            if (flag)  ret.Add(word); 
+        }return ret;
+    }
+}
