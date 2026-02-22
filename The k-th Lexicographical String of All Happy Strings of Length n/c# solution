@@ -1,0 +1,37 @@
+public class Solution {
+    public string GetHappyString(int n, int k) {
+        //if the resultant list does not have k strings in it
+        if (3 * Math.Pow(2, n - 1) < k) return "";
+
+        var arr = new string[3];
+        
+        arr[0] = "a";
+        arr[1] = "b";
+        arr[2] = "c";
+
+        while(arr[0].Length != n){
+            var temparr = new string[arr.Length * 2];
+            int idx = 0;
+
+            foreach(var str in arr){
+                if (str[str.Length - 1] == 'a'){
+                    temparr[idx] = str + 'b';
+                    temparr[idx + 1] = str + 'c';
+
+                }
+                else if (str[str.Length - 1] == 'b'){
+                    temparr[idx] = str + 'a';
+                    temparr[idx + 1] = str + 'c';
+
+                }
+                else if (str[str.Length - 1] == 'c'){
+                    temparr[idx] = str + 'a';
+                    temparr[idx + 1] = str + 'b';
+
+                }
+                idx += 2;
+                arr = temparr;
+            }
+        }return arr[k - 1];
+    }
+}
