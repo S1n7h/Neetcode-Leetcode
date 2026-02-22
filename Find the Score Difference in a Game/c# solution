@@ -1,0 +1,19 @@
+public class Solution {
+    public int ScoreDifference(int[] nums) {
+        int PlayerOneScore = 0;
+        int PlayerTwoScore = 0;
+        var flag = true;
+        for(int i = 0 ; i < nums.Length ; i++){
+            //odd
+            if (nums[i] % 2 != 0){
+                flag = !flag;
+            }
+            //sixth multiple
+            if ((i + 1) % 6 == 0){
+                flag = !flag;
+            }
+            if (flag) PlayerOneScore += nums[i];
+            else PlayerTwoScore += nums[i];
+        }return PlayerOneScore - PlayerTwoScore;
+    }
+}

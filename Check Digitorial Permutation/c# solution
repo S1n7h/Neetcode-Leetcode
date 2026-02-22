@@ -1,0 +1,36 @@
+public class Solution {
+    public bool IsDigitorialPermutation(int n) {
+        List<int> ListOfDigits = new List<int>();
+
+        int tempn = n;
+        while(tempn != 0){
+            ListOfDigits.Add(tempn % 10);
+            tempn /= 10;
+        }
+
+        int sum = 0;
+        foreach(var digit in ListOfDigits){
+            sum += factorial(digit);
+        }
+
+        int tempSum = sum;
+        List<int> ListOfDigitsInSum = new List<int>();
+        while(tempSum != 0){
+            ListOfDigitsInSum.Add(tempSum % 10);
+            tempSum /= 10;
+        }
+
+        foreach(var digit in ListOfDigitsInSum){
+            if (!ListOfDigits.Contains(digit)) return false;
+            else ListOfDigits.Remove(digit);
+        }
+        if (ListOfDigits.Count != 0) return false;
+        return true;
+    }
+
+    public int factorial(int n){
+        if (n <= 0)return 1;
+
+        return n * factorial(n - 1);
+    }
+}
