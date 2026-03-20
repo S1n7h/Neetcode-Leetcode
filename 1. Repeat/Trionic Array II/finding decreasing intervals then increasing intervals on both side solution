@@ -1,0 +1,61 @@
+public class Solution {
+    public long MaxSumTrionic(int[] nums) {
+        var pairs = new List<(int, int)>();
+
+        long ret = long.MinValue;
+
+        int l = 0;
+        //detect decreasing parts of the array
+        for (int r = 1 ; r < nums.Length ; r++){
+            if (nums[r - 1] < nums[r]){
+                if (l == 0 || l == r - 1){
+                    l = r;
+                }else{
+                    pairs.Add((l, r - 1));
+                    l = r;
+                }
+            }else if (nums[r - 1] == nums[r]){
+                l = r;
+            }
+        }
+
+        //find strictly increasing intervals on the left and right side of the decreasing array
+        for (int i = 0 ; i < pairs.Count ; i++){
+            var pair = pairs[i];
+            Console.WriteLine($"X:{pair.Item1}  Y:{pair.Item2}");
+
+            long lmax = long.MinValue;
+            long lsum = 0;
+            
+            int left = pair.Item1;
+            
+            //strictly increasing on the left
+            while(left - 1 >= 0 && nums[left - 1] < nums[left]){
+                lsum += nums[left - 1];
+                lmax = Math.Max(lmax, lsum);
+                left--;
+            }
+
+            long rmax = long.MinValue;
+            long rsum = 0;
+
+            int right = pair.Item2;
+
+            //strictly increasing on the right
+            while(right + 1 <= nums.Length - 1 && nums[right] < nums[right + 1]){
+                rsum += nums[right + 1];
+                rmax = Math.Max(rmax, rsum);
+                right++;
+            }
+
+            long sum = 0;
+            for (int j = pair.Item1 ; j <= pair.Item2 ; j++)    sum += nums[j];
+            
+            if (left != pair.Item1 && right != pair.Item2)
+                ret = Math.Max(Math.Max(lsum, lmax) + Math.Max(rsum, rmax) + sum, ret);
+            Console.WriteLine($"{ret} left = {left}  right = {right}");
+        }
+
+        return ret;        
+    }
+}
