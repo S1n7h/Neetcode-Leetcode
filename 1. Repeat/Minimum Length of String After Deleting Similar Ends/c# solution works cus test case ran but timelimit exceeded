@@ -1,0 +1,23 @@
+public class Solution {
+    public int MinimumLength(string s) {
+        int l = 0, r = s.Count() - 1;
+        while(l < s.Count() && r < s.Count() && s[l] == s[r] && l != r){
+            int prefixLength = 0;
+            int suffixLength = 0;
+            while(prefixLength + 1 != r && s[prefixLength] == s[prefixLength + 1]){
+                foreach(var str in s)   Console.Write($"{str}");
+                prefixLength++;
+            }
+            while(r - suffixLength - 1 != l + prefixLength && s[r - suffixLength] == s[r - suffixLength - 1]){
+                suffixLength++;
+            }
+            s = s.Remove(r - suffixLength, suffixLength + 1);
+            s = s.Remove(0, prefixLength + 1);
+            r = s.Count() - 1;
+            Console.WriteLine($"0-{prefixLength + 1}");
+            Console.WriteLine($"{r - suffixLength}-{suffixLength + 1}");
+            foreach(var str in s)   Console.Write($"{str}");
+            Console.WriteLine(r);
+        }return s.Count();
+    }
+}

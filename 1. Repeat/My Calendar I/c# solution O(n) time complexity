@@ -1,0 +1,20 @@
+public class MyCalendar {
+    List<(int, int)> calender = new List<(int, int)>();
+    public MyCalendar() {
+        
+    }
+    
+    public bool Book(int startTime, int endTime) {
+        for(int i = 0 ; i < calender.Count() ; i++){
+            if (startTime < calender[i].Item2 && endTime > calender[i].Item1)
+                return false;            
+        }calender.Add((startTime, endTime));
+        return true;
+    }
+}
+
+/**
+ * Your MyCalendar object will be instantiated and called as such:
+ * MyCalendar obj = new MyCalendar();
+ * bool param_1 = obj.Book(startTime,endTime);
+ */
