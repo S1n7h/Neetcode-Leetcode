@@ -1,0 +1,60 @@
+public class MyCalendar {
+    public class Node{
+        public int startTime;
+        public int endTime;
+        public Node left;
+        public Node right;    
+
+        public Node(){
+
+        }
+
+        public Node(int x, int y, Node left = null, Node right = null){
+            this.startTime = x;
+            this.endTime = y;
+            this.left = left;
+            this.right = right;
+        }
+    }
+    Node root = null;
+    public MyCalendar() {
+        
+    }
+    
+    public bool Book(int startTime, int endTime) {
+        if (root == null){
+            root = new Node(startTime, endTime);
+            return true;
+        }else{
+            return Insert(root, startTime, endTime);
+        }
+    }
+
+    bool Insert(Node root, int startTime, int endTime){
+        if (root == null)   return true;
+
+        //if found to be within bounds
+        if (startTime < root.endTime && endTime > root.startTime)    return false;
+
+        //if found to be before bounds
+        if (endTime <= root.startTime){
+            //check whether said node has left value or not
+            if (Insert(root.left, startTime, endTime)){
+                if (root.left == null) root.left = new Node(startTime, endTime);
+            }else return false;
+        }//if found to be after bounds
+        else if (startTime >= root.endTime){
+            //check whether said node has right value or not
+            if (Insert(root.right, startTime, endTime)){
+                if(root.right == null) root.right = new Node(startTime, endTime);
+            }else return false;
+        }
+        return true;
+    }
+}
+
+/**
+ * Your MyCalendar object will be instantiated and called as such:
+ * MyCalendar obj = new MyCalendar();
+ * bool param_1 = obj.Book(startTime,endTime);
+ */
