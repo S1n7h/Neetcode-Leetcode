@@ -1,0 +1,32 @@
+public class MyCalendarTwo {
+    List<(int start, int end)> bookings;
+    List<(int start, int end)> overlaps;
+    public MyCalendarTwo() {
+        bookings = new List<(int start, int end)>();
+        overlaps = new List<(int start, int end)>();
+    }
+    
+    public bool Book(int startTime, int endTime) {
+        //check whether current boundary overlaps with one of the overlaps present in the list overlaps
+        //if it does, it means, there are three overlaps so return false
+        foreach(var overlap in overlaps){
+            if (Math.Max(startTime, overlap.start) < Math.Min(endTime, overlap.end))    return false;
+        }
+
+        //add if any sort of overlap happens with all the bookings present in the list bookings
+        foreach(var booking in bookings){
+            int start = Math.Max(startTime, booking.start);
+            int end = Math.Min(endTime, booking.end);
+            if (start < end)    overlaps.Add((start, end));
+        }
+        //add to list of stuff booked
+        bookings.Add((startTime, endTime));
+        return true;
+    }
+}
+
+/**
+ * Your MyCalendarTwo object will be instantiated and called as such:
+ * MyCalendarTwo obj = new MyCalendarTwo();
+ * bool param_1 = obj.Book(startTime,endTime);
+ */
