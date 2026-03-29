@@ -1,0 +1,37 @@
+public class Solution {
+    public int ClosedIsland(int[][] grid) {
+        int ret = 0;
+        Dictionary<(int, int), bool> visited = new Dictionary<(int, int), bool>();
+        for (int r = 0 ; r < grid.Count() ; r++){
+            for (int c = 0 ; c < grid[0].Count() ; c++){
+                if (grid[r][c] == 0 && !visited.ContainsKey((r, c))){
+                    if ( Dfs(grid, visited, r, c))   ret++;
+                }
+            }
+        }return ret;
+    }
+
+    bool Dfs(int[][] grid, Dictionary<(int, int), bool> visited, int r, int c){
+        // 1. Out of bounds → open island
+        if (r < 0 || c < 0 || r >= grid.Length || c >= grid[0].Length)
+            return false;
+
+        // 2. Water → enclosed side
+        if (grid[r][c] == 1)
+            return true;
+
+        // 3. Already visited → safe
+        if (visited.ContainsKey((r, c)))
+            return true;
+
+        visited[(r, c)] = true;
+
+        // 4. Explore all directions
+        bool down = Dfs(grid, visited, r + 1, c);
+        bool up = Dfs(grid, visited, r - 1, c);
+        bool right = Dfs(grid, visited, r, c + 1);
+        bool left = Dfs(grid, visited, r, c - 1);
+
+        return down && up && right && left;
+    }
+}

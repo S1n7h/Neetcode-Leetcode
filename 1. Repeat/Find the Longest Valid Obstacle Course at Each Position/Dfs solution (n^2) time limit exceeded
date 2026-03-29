@@ -1,0 +1,48 @@
+public class Solution {
+    public int[] LongestObstacleCourseAtEachPosition(int[] obstacles) {
+        Dictionary<int, int> visited = new Dictionary<int, int>();
+        int[] ret = new int[obstacles.Count()];
+
+        for(int i = obstacles.Count() - 1 ; i >= 0 ; i--){
+            ret[i] = Dfs(obstacles, visited, i);
+        }return ret;
+    }
+
+    int Dfs(int[] obstacles, Dictionary<int, int> visited, int idx){
+        if (visited.ContainsKey(idx)) return visited[idx];
+
+        int max_length = 1;
+        for(int i = idx - 1 ; i >= 0 ; i--){
+            if (obstacles[i] <= obstacles[idx]){
+                int length = Dfs(obstacles, visited, i);
+                max_length = Math.Max(length + 1, max_length);
+                // visited[idx] = length + 1;
+                // return visited[idx];
+            }
+        }visited[idx] = max_length;
+        return visited[idx];
+    }
+}
+
+
+
+public class Solution {
+    public int LengthOfLIS(int[] nums) {
+        List<int> sequence = new List<int>();
+
+        for(int i = 0 ; i < nums.Count() ; i++){
+            if (sequence.Count() == 0 || sequence[sequence.Count() - 1] <= nums[i]){
+                sequence.Add(nums[i]);
+            }else{
+                int l = 0, r = sequence.Count();
+                while(l < r){
+                    int mid = l + (r - l) / 2;
+                    if (sequence[mid] < nums[i])    l = mid + 1;
+                    else r = mid;
+                }
+                if (l == sequence.Count())  sequence.Add(nums[i]);
+                else sequence[l] = nums[i];
+            }
+        }return sequence.Count();
+    }
+}

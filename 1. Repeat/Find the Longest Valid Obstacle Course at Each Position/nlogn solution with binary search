@@ -1,0 +1,27 @@
+public class Solution {
+    public int[] LongestObstacleCourseAtEachPosition(int[] obstacles) {
+        List<int> sequence = new List<int>();
+
+        for(int i = 0 ; i < obstacles.Count() ; i++){
+            if (sequence.Count() == 0 || sequence[sequence.Count() - 1] <= obstacles[i]){
+                sequence.Add(obstacles[i]);
+                obstacles[i] = sequence.Count();
+            }else{
+                int l = 0, r = sequence.Count();
+                while(l < r){
+                    int mid = l + (r - l) / 2;
+                    if (sequence[mid] <= obstacles[i])    l = mid + 1;
+                    else r = mid;
+                }
+                if (l == sequence.Count())  {
+                    sequence.Add(obstacles[i]);
+                    obstacles[i] = sequence.Count();
+                }
+                else {
+                    sequence[l] = obstacles[i];
+                    obstacles[i] = l + 1;
+                }
+            }
+        }return obstacles;
+    }
+}
