@@ -1,0 +1,64 @@
+public class Solution {
+    public int NumberOfGoodPaths(int[] vals, int[][] edges) {
+        Dictionary<int, List<int>> graph = new Dictionary<int, List<int>>();
+        //visited is supposed to store the (start node, number of branches)
+        Dictionary<(int, int), bool> visited = new Dictionary<(int, int), bool>();
+
+        foreach(var edge in edges){
+            if (!graph.ContainsKey(edge[0]))    graph[edge[0]] = new List<int>();
+            if (!graph.ContainsKey(edge[1]))    graph[edge[1]] = new List<int>();
+
+            graph[edge[0]].Add(edge[1]);
+            graph[edge[1]].Add(edge[0]);
+        }        
+        int ret = vals.Count();
+        Console.WriteLine($"{ret}");
+        foreach(var root in graph.Keys){
+            var path = new List<int>();
+            Console.Write($"root: {root}");
+            int num = Dfs(vals, graph, visited, path, vals[root], root);
+            Console.WriteLine($"    num: {num}");
+            ret += num;
+        } 
+        return ret;
+    }
+
+    int Dfs(int[] vals, Dictionary<int, List<int>> graph, Dictionary<(int, int), bool> visited, List<int> path, int max, int currnode){
+        int n = path.Count();
+
+        int ret = 0;
+        //encountered a scenario where last node has higher value
+        if (n != 0 && max > vals[path[0]]) return 0;
+        
+        //if source and destination values match
+        if (n != 0 && vals[path[0]] == vals[currnode]){
+            //having visited a destination means that we have used said destination as a source before
+            //if true, it means we have reached current source using said destination as source, so return 0
+            //because we already took this path and added it already
+
+            //you don't exit in such a scenario where both values are same because, it's possible that
+            //destination node extends into even more branches where there are other nodes which
+            //satisfy the same condition
+            // foreach(var node in path) Console.Write($"{node} -> ");
+            if (!visited.ContainsKey((currnode, path[0]))){
+                ret++;
+                visited[(path[0], currnode)] = true;
+            }
+        }
+
+        //check for cycle
+        if (path.Contains(currnode))    return 0;
+        
+        //if you reach this point in the code, it means that said node hasn't been visited before, it does not form a cycle
+        //and its a valid path cus its value is less than max
+        path.Add(currnode);
+        //loop
+        foreach(var node in graph[currnode]){
+            ret += Dfs(vals, graph, visited, path, Math.Max(max, vals[node]), node);
+        }
+
+        path.RemoveAt(n);
+
+        return ret;
+    }
+}
