@@ -1,0 +1,25 @@
+public class Solution {
+    public int MinCost(int[][] grid) {
+        int m = grid.Length;
+        int n = grid[0].Length;
+
+        //if dp[i][j][k] = true, it means that said answer is possible
+        bool[,,] dp = new bool[m, n, 1024];
+        dp[0,0,grid[0][0]] = true;
+        for(int r = 0 ; r < m ; r++){
+            for(int c = 0 ; c < n ; c++){
+                for(int k = 0 ; k < 1024 ; k++){
+                    if (dp[r,c,k] == true){
+                        if (r + 1 < m){
+                            if ((grid[r + 1][c] ^ k) < 1024)  dp[r+1,c,grid[r + 1][c] ^ k] = true;
+                        }if (c + 1 < n){
+                            if ((grid[r][c + 1] ^ k) < 1024)  dp[r,c+1,grid[r][c+1] ^ k] = true;
+                        }
+                    }
+                }
+            }
+        }for(int i = 0 ; i < 1024 ; i++){
+            if (dp[m - 1,n - 1,i] == true) return i;
+        }return -1;
+    }
+}
