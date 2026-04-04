@@ -1,0 +1,52 @@
+public class EventManager {
+    SortedDictionary<int, SortedSet<int>> priorities = new SortedDictionary<int, SortedSet<int>>();
+    Dictionary<int, int> events = new Dictionary<int, int>();
+    
+    public EventManager(int[][] cevents) {
+        for(int i = 0 ; i < cevents.Length ; i++){
+            //make list having key: event & element: curr_priority
+            events[cevents[i][0]] = cevents[i][1];
+
+            //make a dictionary having key: priority & element: an array of all events having key as their priority
+            if (!priorities.ContainsKey(cevents[i][1])) priorities[cevents[i][1]] = new SortedSet<int>();
+            priorities[cevents[i][1]].Add(cevents[i][0]);           
+        }
+    }
+    
+    public void UpdatePriority(int eventId, int newPriority) {
+        int curr_priority = events[eventId];
+
+        //remove said event form dictionary
+        priorities[curr_priority].Remove(eventId);
+        if (priorities[curr_priority].Count == 0) priorities.Remove(curr_priority);
+
+        //add event to key: new priority in the dictionary
+        if (!priorities.ContainsKey(newPriority)) priorities[newPriority] = new SortedSet<int>();
+        priorities[newPriority].Add(eventId);
+
+        //change priority in map
+        events[eventId] = newPriority;
+    }
+    
+    public int PollHighest() {
+        //find highest priority
+        if (priorities.Count() == 0) return -1;
+        int max_priority = priorities.Last().Key;
+
+        //find smallest eventId at max_priority
+        int min_event = priorities[max_priority].Min;
+
+        //remove event from dictionary at max_priority
+        priorities[max_priority].Remove(min_event);  
+        if (priorities[max_priority].Count == 0) priorities.Remove(max_priority);
+        events.Remove(min_event);
+        return min_event;
+    }
+}
+
+/**
+ * Your EventManager object will be instantiated and called as such:
+ * EventManager obj = new EventManager(events);
+ * obj.UpdatePriority(eventId,newPriority);
+ * int param_2 = obj.PollHighest();
+ */

@@ -1,0 +1,53 @@
+public class EventManager {
+    PriorityQueue<int, (int, int)> pq;
+    //pq will check the Item1 in (int, int) and use that for comparison then use Item2 for comparison 
+    Dictionary<int, int> priority;
+    public EventManager(int[][] events) {
+        pq = new PriorityQueue<int, (int, int)>();
+        priority = new Dictionary<int, int>();
+        for(int i = 0 ; i < events.Length; i++){
+            int p = events[i][1];
+            int id = events[i][0];
+
+            //if you enter (1, 100) and (2, 1), where PriorityQueue = (int, int) 
+            //then you will get 2->1 on dequeuing
+            //if you want higher priority to come out on top, you use -p for minHeap
+            //if the priority of the event you are entering matches the priority of the event at the top,
+            //only then is Item2 is used for comparison
+            //Enqueue-> (1, (-2, 1))
+            //          (2, (-2, 2))
+            //          (3, (-3, 3))
+            //in this scenario, since 3 has lowest priority ie -3, in a minHeap, that's prioritised first, so it pops out first
+            //since 1 and 2 have same Item1 priority, we move to Item2. 1 has 1 and 2 has 2 as its priority, based on that,
+            //1 pops out first (ie, the minimum element pops out first) then 2 
+            pq.Enqueue(id, (-p, id));
+            priority[id] = p;
+        }
+    }
+    
+    public void UpdatePriority(int eventId, int newPriority) {
+        priority[eventId] = newPriority;
+        pq.Enqueue(eventId, (-newPriority, eventId));
+    }
+    
+    public int PollHighest() {
+        while (pq.Count > 0){
+            pq.TryDequeue(out int id, out (int, int) p);
+
+            //for invalid event, whose priority was previously changed, since you already remove them from the dictionary in the loop,
+            //you need to check whether id is a valid key or not
+            if (!priority.ContainsKey(id)) continue;
+            if (priority[id] == -p.Item1) {
+                priority.Remove(id);
+                return id; 
+            }
+        }return -1;
+    }
+}
+
+/**
+ * Your EventManager object will be instantiated and called as such:
+ * EventManager obj = new EventManager(events);
+ * obj.UpdatePriority(eventId,newPriority);
+ * int param_2 = obj.PollHighest();
+ */
