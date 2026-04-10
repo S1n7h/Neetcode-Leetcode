@@ -1,0 +1,47 @@
+public class Solution {
+    public int FindMaxForm(string[] strs, int m, int n) {
+        //freq[2] = {0 freq, 1 freq}
+        Dictionary<int, List<int>> freq = new Dictionary<int, List<int>>();
+        Dictionary<(int, int, int), int> dp = new Dictionary<(int, int, int), int>();
+        //formualte the freq table
+        for(int i = 0 ; i < strs.Length; i++){
+            var str = strs[i];
+            int zero = 0;
+            int one = 0;
+            foreach(var ch in str){
+                if (ch == '0')  zero++;
+                else one++;
+            }
+            freq[i] = new List<int>();
+            freq[i].Add(zero);
+            freq[i].Add(one);
+        }
+
+        int ret = 0;
+
+        ret = Math.Max(ret, Dfs(strs, freq, dp, m, n, 0));
+
+        return ret;
+    }
+    
+    //m = 0, n = 1
+    //Dfs(m,n,idx) returns the maximum subset length obtainable after that index with that m and n
+    int Dfs(string[] strs, Dictionary<int, List<int>> freq, Dictionary<(int, int, int), int> dp, int m, int n, int idx){
+        if (idx >= strs.Length) return 0;
+        if (m == 0 && n == 0)   return 0;
+
+        //return maximum length obtainable at idx
+        if (dp.ContainsKey((idx, m, n))) return dp[(idx, m, n)];
+
+        //skip
+        int ret = Dfs(strs, freq, dp, m, n, idx + 1);
+
+        //dfs if m and n don't become less than 0 on traversal, then do dfs
+        if (m - freq[idx][0] >= 0 && n - freq[idx][1] >= 0){
+            ret = Math.Max(ret, 1 + Dfs(strs, freq, dp, m - freq[idx][0], n - freq[idx][1], idx + 1));
+        }
+        
+        dp[(idx, m, n)] = ret;
+        return dp[(idx, m, n)];
+    }
+}
